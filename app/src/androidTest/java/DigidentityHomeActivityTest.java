@@ -41,7 +41,7 @@ public class DigidentityHomeActivityTest {
     }
 
     @Test
-    public void swipUpCatalogListView() throws Exception
+    public void swipeUpCatalogListView() throws Exception
     {
         Espresso.onView(ViewMatchers.withId(R.id.catalogItemListView)).perform(ViewActions.swipeUp());
         Espresso.onView(ViewMatchers.withId(R.id.catalogItemListView)).perform(ViewActions.swipeDown());
