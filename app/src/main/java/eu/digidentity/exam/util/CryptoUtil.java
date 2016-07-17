@@ -1,4 +1,4 @@
-package eu.digidentity.exam.unit;
+package eu.digidentity.exam.util;
 
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -31,6 +31,7 @@ public class CryptoUtil extends AsyncTask<String, Integer, String> {
     protected String doInBackground(String... strings) {
         try {
             if (strings[0].equals(CryptoOperation.ENCRYPTION.name())) {
+                Log.v(DEBUG_TAG,"Data Hello:"+EncryptionDecryptionUtil.encrypt("Hello World",strings[2],strings[3]));
                 return EncryptionDecryptionUtil.encrypt(strings[1],strings[2],strings[3]);
             } else {
                 return EncryptionDecryptionUtil.decrypt(strings[1],strings[2],strings[3]);

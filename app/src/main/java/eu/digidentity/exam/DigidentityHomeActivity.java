@@ -16,8 +16,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,11 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 import eu.digidentity.exam.model.CatalogItem;
-import eu.digidentity.exam.unit.CryptoUtil;
-import eu.digidentity.exam.unit.DownloadUtil;
-import eu.digidentity.exam.unit.EncryptionDecryptionUtil;
-import eu.digidentity.exam.unit.HttpRequestUtil;
-import eu.digidentity.exam.unit.Util;
+import eu.digidentity.exam.util.CryptoUtil;
+import eu.digidentity.exam.util.DownloadUtil;
+import eu.digidentity.exam.util.HttpRequestUtil;
+import eu.digidentity.exam.util.Util;
 import eu.digidentity.exam.view.adapter.CatalogItemAdapter;
 
 /**
@@ -42,7 +39,6 @@ import eu.digidentity.exam.view.adapter.CatalogItemAdapter;
  */
 public class DigidentityHomeActivity extends Activity {
     private final static String DEBUG_TAG = DigidentityHomeActivity.class.getName();
-
 
     private GestureDetectorCompat mGestureDetectorCompat;
 
@@ -108,22 +104,22 @@ public class DigidentityHomeActivity extends Activity {
                 mProgressDialog.show();
                 String contentData = loadCacheData();
                 Log.v(DEBUG_TAG, "Data: " + contentData);
-                Handler handler = new Handler(Looper.getMainLooper()){
+                Handler handler = new Handler(Looper.getMainLooper()) {
                     @Override
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);
                         mProgressDialog.dismiss();
-                        Log.v(DEBUG_TAG,"Decrypted data: "+msg.obj.toString());
+                        Log.v(DEBUG_TAG, "Decrypted data: " + msg.obj.toString());
                         refreshCatalogList(Arrays.asList(Util.toObj(msg.obj.toString(), CatalogItem[].class)));
                     }
                 };
-                new CryptoUtil(handler).execute(CryptoUtil.CryptoOperation.DECRYPTION.name(),contentData,getResources().getString(R.string.encryptionKey),getResources().getString(R.string.initVector));
+                new CryptoUtil(handler).execute(CryptoUtil.CryptoOperation.DECRYPTION.name(), contentData, getResources().getString(R.string.encryptionKey), getResources().getString(R.string.initVector));
 
             } else {
                 makeRequestToGetCatalogItems(getResources().getString(R.string.catalog_items_url));
             }
         } catch (Exception ex) {
-            Log.v(DEBUG_TAG, ex.getMessage(), ex);
+            Log.e(DEBUG_TAG, ex.getMessage(), ex);
         }
     }
 
@@ -139,8 +135,8 @@ public class DigidentityHomeActivity extends Activity {
                     mProgressDialog.dismiss();
                     Log.v(DEBUG_TAG, "Catalog Data: " + msg.obj.toString());
 
-                    cacheServerData(msg.obj.toString());
                     refreshCatalogList(Arrays.asList(Util.toObj(msg.obj.toString(), CatalogItem[].class)));
+                    cacheServerData(Util.toJSON(mCatalogItemAdapter.getCatalogItems()));
                 } catch (Exception ex) {
                     Log.v(DEBUG_TAG, ex.getMessage(), ex);
                 }
@@ -151,33 +147,18 @@ public class DigidentityHomeActivity extends Activity {
     }
 
     private void refreshCatalogList(List<CatalogItem> catalogItems) {
-        if (catalogItems.size() > 0 && catalogItems.size() <= 10) {
-
-            for (CatalogItem catalogItem :
-                    catalogItems) {
-                Log.v(DEBUG_TAG, catalogItem.getmText());
-            }
-            List<CatalogItem> subList;
-            if (isScrollUp) {
-                if (mCatalogItemAdapter.getCatalogItems().size() < catalogItems.size()) {
-                    subList = new ArrayList<>(mCatalogItemAdapter.getCatalogItems().subList(0, mCatalogItemAdapter.getCatalogItems().size()));
-                } else {
-                    subList = new ArrayList<>(mCatalogItemAdapter.getCatalogItems().subList(0, catalogItems.size()));
-
-                }
-                mCatalogItemAdapter.getCatalogItems().removeAll(subList);
-                mCatalogItemAdapter.getCatalogItems().addAll(catalogItems);
-            } else {
-                if (mCatalogItemAdapter.getCatalogItems().size() < catalogItems.size()) {
-                    subList = new ArrayList<>(mCatalogItemAdapter.getCatalogItems().subList(0, mCatalogItemAdapter.getCatalogItems().size()));
-                } else {
-                    subList = new ArrayList<>(mCatalogItemAdapter.getCatalogItems().subList(mCatalogItemAdapter.getCatalogItems().size() - catalogItems.size(), mCatalogItemAdapter.getCatalogItems().size()));
-                }
-                mCatalogItemAdapter.getCatalogItems().removeAll(subList);
-                mCatalogItemAdapter.getCatalogItems().addAll(0, catalogItems);
-            }
-            mCatalogItemAdapter.notifyDataSetChanged();
+        Log.v(DEBUG_TAG, "Catalog Items Size: " + catalogItems.size());
+        for (CatalogItem catalogItem :
+                catalogItems) {
+            Log.v(DEBUG_TAG, catalogItem.getmText());
         }
+        List<CatalogItem> subList;
+        if (isScrollUp) {
+            mCatalogItemAdapter.getCatalogItems().addAll(catalogItems);
+        } else {
+            mCatalogItemAdapter.getCatalogItems().addAll(0, catalogItems);
+        }
+        mCatalogItemAdapter.notifyDataSetChanged();
     }
 
     private boolean isServerCacheAvailable() {
@@ -196,7 +177,7 @@ public class DigidentityHomeActivity extends Activity {
                 dataBuffer.append(new String(buffer, 0, len));
             }
         } catch (Exception ex) {
-            Log.v(DEBUG_TAG, ex.getMessage(), ex);
+            Log.e(DEBUG_TAG, ex.getMessage(), ex);
         } finally {
             if (fileInputStream != null) {
                 fileInputStream.close();
@@ -215,17 +196,17 @@ public class DigidentityHomeActivity extends Activity {
                 try {
                     fileOutputStream.write(msg.obj.toString().getBytes());
                 } catch (Exception ex) {
-                    Log.v(DEBUG_TAG, ex.getMessage(), ex);
+                    Log.e(DEBUG_TAG, ex.getMessage(), ex);
                 } finally {
                     try {
                         fileOutputStream.close();
                     } catch (Exception ex) {
-                        Log.v(DEBUG_TAG, ex.getMessage(), ex);
+                        Log.e(DEBUG_TAG, ex.getMessage(), ex);
                     }
                 }
             }
         };
-        new CryptoUtil(handler).execute(CryptoUtil.CryptoOperation.ENCRYPTION.name(), responseContent,getResources().getString(R.string.encryptionKey),getResources().getString(R.string.initVector));
+        new CryptoUtil(handler).execute(CryptoUtil.CryptoOperation.ENCRYPTION.name(), responseContent, getResources().getString(R.string.encryptionKey), getResources().getString(R.string.initVector));
     }
 
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {

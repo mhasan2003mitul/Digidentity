@@ -1,4 +1,4 @@
-package eu.digidentity.exam.unit;
+package eu.digidentity.exam.util;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.ByteBuffer;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -43,7 +42,7 @@ public class HttpRequestUtil {
         Log.v(TAG,"Requested URL: "+this.mUrlString);
         URL url = new URL(this.mUrlString);
         URLConnection urlConnection = (URLConnection) url.openConnection();
-        String responseContent;
+        String responseContent = null;
 
         for (Map.Entry<String,String> header:this.httpHeader.entrySet())
         {

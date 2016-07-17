@@ -1,4 +1,4 @@
-package eu.digidentity.exam.unit;
+package eu.digidentity.exam.util;
 
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -12,6 +12,7 @@ import java.util.Map;
  * Email: mhasan_mitul@yahoo.com
  * Skype: mhasan_mitul
  */
+
 public class DownloadUtil extends AsyncTask<Object, Integer, String> {
     private static final String DEBUG_TAG = DownloadUtil.class.getName();
     private Handler mUIOSHandler;

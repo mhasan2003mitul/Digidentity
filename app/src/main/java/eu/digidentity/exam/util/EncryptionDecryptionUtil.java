@@ -1,4 +1,4 @@
-package eu.digidentity.exam.unit;
+package eu.digidentity.exam.util;
 
 import android.util.Log;
 
@@ -43,7 +43,7 @@ public class EncryptionDecryptionUtil{
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
 
-            byte[] original = cipher.doFinal(new org.apache.commons.codec.binary.Base64().decode(encrypted.getBytes()));
+            byte[] original = cipher.doFinal(new Base64().decode(encrypted.getBytes()));
 
             return new String(original);
         } catch (Exception ex) {

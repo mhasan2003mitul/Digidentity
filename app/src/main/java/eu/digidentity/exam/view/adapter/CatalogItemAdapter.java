@@ -13,7 +13,7 @@ import java.util.List;
 
 import eu.digidentity.exam.R;
 import eu.digidentity.exam.model.CatalogItem;
-import eu.digidentity.exam.unit.ImageUtil;
+import eu.digidentity.exam.util.ImageUtil;
 
 /**
  * Created by Md. Mainul Hasan Patwary on 14-Jul-16.
