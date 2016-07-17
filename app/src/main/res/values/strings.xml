@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">DigidentityExam</string>
+    <string name="catalog_items_url">https://marlove.net/mock/v1/items</string>
+    <string name="catalog_item_url">https://marlove.net/mock/v1/item</string>
+    <string name="authorization_header_name">Authorization</string>
+    <string name="authorization_header_value">8894e4b60fb5aec440e45b0b6d615916</string>
+    <string name="loading_text">Loading...</string>
+    <string name="cache_file_name">cache.digidentity</string>
+    <string name="encryptionKey">Bar12345Bar12345</string>
+    <string name="initVector">RandomInitVector</string>
 </resources>

@@ -5,10 +5,11 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:id="@+id/catalogItemScrollView">
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/catalogItemList" />
+            android:id="@+id/catalogItemListView" />
     </ScrollView>
 </RelativeLayout>
